@@ -18,6 +18,11 @@ spring:
         - Path=/sq/** # 所有demo开头的请求走这个路由
         filters:
         - StripPrefix=1 # 转发之前将/demo去掉
+        - name: RequestRateLimiter
+          args:
+            key-resolver: '#{@hostAddrKeyResolver}' #用于限流的键的解析器的 Bean 对象的名字。它使用 SpEL 表达式根据#{@beanName}从 Spring 容器中获取 Bean 对象
+            redis-rate-limiter.replenishRate: 1 #令牌桶每秒填充平均速率
+            redis-rate-limiter.burstCapacity: 3 #令牌桶总容量。
 
 # 添加 eureka 注册中心集群
 eureka:
