@@ -1,0 +1,36 @@
+server:
+  port: 8083
+
+# 服务与服务之间相互调用一般都是根据这个name 。
+spring:
+  application:
+    name: springcloud-eureka-serviceprovider
+  zipkin:
+#    base-url: http://localhost:9411  #http方式提交到zipkin
+    sender:
+      type: rabbit  # 切换到rabbitmq
+    enabled: true
+  sleuth:
+    sampler:
+      #应采样的请求的概率。 例如。 应该对1.0  -  100％的请求进行抽样。 精度仅为整数（即不支持0.1％的迹线）。
+      probability: 1.0
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: lbl
+    password: 123456
+    listener: # 这里配置了重试策略
+      direct:
+        retry:
+          enabled: true
+      simple:
+        retry:
+          enabled: true
+
+eureka:
+  client:
+    serviceUrl:
+#      指定服务注册中心的地址
+ #     defaultZone: http://localhost:8080/eureka/
+#      上面是eureka单机注册中心。下面是eureka集群模式
+      defaultZone: http://admin:123456@eureka1:8001/eureka/,http://admin:123456@eureka2:8002/eureka/,http://admin:123456@eureka3:8003/eureka/

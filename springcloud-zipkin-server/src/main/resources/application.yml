@@ -1,0 +1,32 @@
+server:
+  port: 9411
+
+# 最佳实践：springcloud应用都要指定application.name
+spring:
+  application:
+    name: springcloud-zipkin-server
+  main:
+    allow-bean-definition-overriding: true
+  # 配置mysql
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/zipkin?zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2b8&charset=utf8mb4&useSSL=false
+    username: root
+    password: lbl0168
+
+eureka:
+  client:
+    serviceUrl:
+      #      指定服务注册中心的地址
+      defaultZone: http://localhost:8080/eureka/
+#      上面是eureka单机注册中心。下面是eureka集群模式
+#      defaultZone: http://admin:123456@eureka2:8001/eureka/,http://admin:123456@eureka3:8002/eureka/,http://admin:123456@eureka2:8003/eureka/
+  defaultZone: http://admin:123456@eureka1:8001/eureka/,http://admin:123456@eureka2:8002/eureka/,http://admin:123456@eureka3:8003/eureka/
+#指明使用mysql存储
+zipkin:
+  storage:
+    type: mysql
+  collector:
+    rabbitmq:
+      addresses: localhost
+      username: lbl
+      password: 123456
