@@ -6,9 +6,10 @@ spring:
   application:
     name: springcloud-gateway-witheureka
   redis:
-    host: localhost
+    host: 192.168.10.19
     port: 6379
     database: 0
+    password: DfrgRgR2
   cloud:
     gateway:
       routes:
@@ -23,10 +24,21 @@ spring:
             key-resolver: '#{@hostAddrKeyResolver}' #用于限流的键的解析器的 Bean 对象的名字。它使用 SpEL 表达式根据#{@beanName}从 Spring 容器中获取 Bean 对象
             redis-rate-limiter.replenishRate: 1 #令牌桶每秒填充平均速率
             redis-rate-limiter.burstCapacity: 3 #令牌桶总容量。
-
+      - id: auth_login
+        uri: lb://springcloud-gateway-witheureka
+        predicates:
+        - Path=/common/**
+        filters:
+        - name: RequestRateLimiter
+          args:
+            key-resolver: '#{@hostAddrKeyResolver}' #用于限流的键的解析器的 Bean 对象的名字。它使用 SpEL 表达式根据#{@beanName}从 Spring 容器中获取 Bean 对象
+            redis-rate-limiter.replenishRate: 1 #令牌桶每秒填充平均速率
+            redis-rate-limiter.burstCapacity: 3 #令牌桶总容量。
 # 添加 eureka 注册中心集群
 eureka:
   client:
     service-url:
       defaultZone: http://admin:123456@eureka1:8001/eureka/,http://admin:123456@eureka2:8002/eureka/,http://admin:123456@eureka3:8003/eureka/
       #defaultZone: http://admin:123456@eureka2:8001/eureka/,http://admin:123456@eureka3:8002/eureka/,http://admin:123456@eureka2:8003/eureka/
+com:
+  ingoreAuthUrls: /sq/login
